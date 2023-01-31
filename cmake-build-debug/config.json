@@ -1,13 +1,12 @@
 {
 	"config": {
-		"name": "ContentSearcher",
+		"name": "Content Searcher",
 		"verson": "0.0.1",
 		"max_responses": 5
 	},
 	"files": [
 		"../resources/file001.txt",
 		"../resources/file002.txt",
-		"../resources/file003.txt",
-		"../resources/file004.txt"
+		"../resources/file003.txt"
 	]
 }
