@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include <iostream>
+#include <exception>
 
 using Json = nlohmann::json;
 

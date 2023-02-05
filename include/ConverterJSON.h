@@ -3,18 +3,11 @@
 
 #include <vector>
 #include <string>
-#include <exception>
 
 /**
 * Класс для работы с JSON-файлами
 */
 class ConverterJSON {
-private:
-	class ConfigFileIsEmpty : public std::exception
-	{
-	public: const char* what() const noexcept override;
-	};
-
 public:
 	ConverterJSON() = default;
 	/**
