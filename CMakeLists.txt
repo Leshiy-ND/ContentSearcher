@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.24)
 project(ContentSearcher VERSION 0.0.1)
 
 set(CMAKE_CXX_STANDARD 17)
-set(JSON_BulidTests OFF CACHE INTERANAL "")
+set(JSON_BuildTests OFF CACHE INTERNAL "")
 
 add_subdirectory(libraries/nlohmann_json)
 
