@@ -13,8 +13,7 @@ public:
 	/**
 	* Метод получения содержимого файлов
 	* @return Возвращает список с содержимым файлов перечисленных
-	*
-	 в config.json
+	* в config.json
 	*/
 	static std::vector<std::string> GetTextDocuments();
 	/**
@@ -22,12 +21,12 @@ public:
 	* количества ответов на один запрос
 	* @return
 	*/
-	int GetResponsesLimit();
+	static int GetResponsesLimit();
 	/**
 	* Метод получения запросов из файла requests.json
 	* @return возвращает список запросов из файла requests.json
 	*/
-	std::vector<std::string> GetRequests();
+	static std::vector<std::string> GetRequests();
 	/**
 	* Положить в файл answers.json результаты поисковых запросов
 	*/

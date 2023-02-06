@@ -4,7 +4,9 @@
 int main()
 {
 	std::cout << "Hello, World!" << std::endl;
-	ConverterJSON::GetTextDocuments();
+	auto texts    = ConverterJSON::GetTextDocuments();
+	auto limit    = ConverterJSON::GetResponsesLimit();
+	auto requests = ConverterJSON::GetRequests();
 	std::cout << "Goodbye, World!" << std::endl;
 	return 0;
 }
