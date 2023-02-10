@@ -1,14 +1,12 @@
 #include "ConverterJSON.h"
-#include <nlohmann/json.hpp>
 #include <fstream>
 
 #include <iostream>
 #include "VersionConfig.h"
 #include <exception>
 
-using Json = nlohmann::json;
 
-std::vector<std::string> ConverterJSON::GetTextDocuments()
+Json ConverterJSON::ReadConfigSafely()
 {
 	std::ifstream iFile("config.json");
 	if (!iFile.is_open())
@@ -17,6 +15,12 @@ std::vector<std::string> ConverterJSON::GetTextDocuments()
 	iFile.close();
 	if (!json.contains("config"))
 		throw std::logic_error("config file is empty");
+	return json;
+}
+
+std::vector<std::string> ConverterJSON::GetTextDocuments()
+{
+	Json json = ReadConfigSafely();
 
 	if (!json["config"].contains("version"))
 		throw std::logic_error("config.json has no file version");
@@ -34,6 +38,7 @@ std::vector<std::string> ConverterJSON::GetTextDocuments()
 		return {};
 	}
 	std::vector<std::string> texts;
+	texts.reserve(json["files"].size());
 	std::stringstream buffer;
 	for (const auto& path : json["files"])
 	{
@@ -42,11 +47,12 @@ std::vector<std::string> ConverterJSON::GetTextDocuments()
 		{
 			buffer.clear();
 			buffer << document.rdbuf();
-			texts.push_back(buffer.str());
+			texts.emplace_back(buffer.str());
 			document.close();
 		}
 		else
 		{
+			texts.emplace_back("");
 			std::cout << "[WARNING]: No such file as \"" << std::string(path) << "\" or no access to path." << std::endl;
 		}
 	}
@@ -55,13 +61,7 @@ std::vector<std::string> ConverterJSON::GetTextDocuments()
 
 int ConverterJSON::GetResponsesLimit()
 {
-	std::ifstream iFile("config.json");
-	if (!iFile.is_open())
-		throw std::logic_error("config file is missing");
-	Json json = Json::parse(iFile);
-	iFile.close();
-	if (!json.contains("config"))
-		throw std::logic_error("config file is empty");
+	Json json = ReadConfigSafely();
 
 	if (json["config"].contains("max_responses"))
 		return json["config"]["max_responses"];
