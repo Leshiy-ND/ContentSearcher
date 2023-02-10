@@ -92,8 +92,8 @@ void ConverterJSON::PutAnswers(std::vector<std::vector<std::pair<int, float>>> a
 	for (auto it = answers.begin(); it < answers.end(); ++it)
 	{
 		std::string reqKey = std::to_string(it - answers.begin() + 1);
-		reqKey.insert(reqKey.begin(), zfill - reqKey.size(), '0');
-		reqKey = "request" + reqKey;
+		reqKey.insert(0, zfill - reqKey.size(), '0');
+		reqKey.insert(0, "request");
 		json["answers"][reqKey]["result"] = !it->empty();
 		if (it->empty()) continue;
 		if (it->size() == 1)
@@ -111,6 +111,6 @@ void ConverterJSON::PutAnswers(std::vector<std::vector<std::pair<int, float>>> a
 		}
 	}
 	std::ofstream oFile("answers.json");
-	oFile << json;
+	oFile << std::setw(4) << json;
 	oFile.close();
 }

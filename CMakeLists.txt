@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(ContentSearcher VERSION 0.0.1)
+project(ContentSearcher VERSION 0.1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(JSON_BuildTests OFF CACHE INTERNAL "")
