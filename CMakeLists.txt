@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.24)
 
 set(CMAKE_CXX_STANDARD 17)
 set(JSON_BuildTests OFF CACHE INTERNAL "")
+set(CMAKE_CXX_FLAGS -pthread)
 
 add_subdirectory(libraries/nlohmann_json)
 

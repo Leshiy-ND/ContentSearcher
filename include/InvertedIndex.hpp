@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <mutex>
 
 struct Entry
 {
@@ -20,7 +21,7 @@ class InvertedIndex
 private:
 	std::vector<std::string> docs; // список содержимого документов
 	std::map<std::string, std::vector<Entry>> freq_dictionary; // частотный словарь
-	bool dictionary_is_being_edited = false;
+	std::mutex m_dictionary_is_being_edited;
 
 public:
 	InvertedIndex() = default;
