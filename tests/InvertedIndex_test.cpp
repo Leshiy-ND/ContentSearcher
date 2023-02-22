@@ -1,0 +1,48 @@
+#include "InvertedIndex.hpp"
+#include <gtest/gtest.h>
+
+
+
+void TestInvertedIndexFunctionality(
+		const std::vector<std::string>&        docs,
+		const std::vector<std::string>&        requests,
+		const std::vector<std::vector<Entry>>& expected)
+{
+	std::vector<std::vector<Entry>> result;
+	InvertedIndex idx;
+	idx.UpdateDocumentBase(docs);
+
+	for (auto& request : requests)
+	{
+		std::vector<Entry> wordCount = idx.GetWordCount(request);
+		result.push_back(wordCount);
+	}
+	ASSERT_EQ(result, expected);
+}
+
+TEST(TestCaseInvertedIndex, TestBasic1)
+{
+	const std::vector<std::string> docs = {
+			"london is the capital of great britain",
+			"big ben is the nickname for the Great bell of the striking clock"
+	};
+	const std::vector<std::string> requests = {
+			"london",
+			"the"
+	};
+	const std::vector<std::vector<Entry>> expected = {
+			{ {0, 1} },        // "london" - 0"london is..", 1""
+			{ {0, 1}, {1, 3} } // "the" - 0"..is the..", 1"..is the..for the..of the.."
+	};
+	TestInvertedIndexFunctionality(docs, requests, expected);
+}
+
+TEST(TestCaseInvertedIndex, TestBasic2)
+{
+	///
+}
+
+TEST(TestCaseInvertedIndex, TestInvertedIndexMissingWord)
+{
+	///
+}
