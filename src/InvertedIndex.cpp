@@ -5,7 +5,39 @@
 #include "InvertedIndex.hpp"
 
 //#include <iostream>
+#include <algorithm>
 #include <thread> // CMakeLists.txt + set(CMAKE_CXX_FLAGS -pthread)
+
+
+bool Entry::operator == (const Entry &other) const
+{
+	return (this->doc_id == other.doc_id && this->count == other.count);
+}
+
+bool Entry::operator < (const Entry &other) const
+{
+	if (this->doc_id  < other.doc_id) return true;
+	if (this->doc_id != other.doc_id) return false;
+	return (this->count < other.count);
+}
+
+bool Entry::operator > (const Entry &other) const
+{
+	if (this->doc_id  > other.doc_id) return true;
+	if (this->doc_id != other.doc_id) return false;
+	return (this->count > other.count);
+}
+
+bool Entry::operator <= (const Entry &other) const
+{
+	return !(*this > other);
+}
+
+bool Entry::operator>=(const Entry &other) const
+{
+	return !(*this < other);
+}
+
 
 void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 {
@@ -37,6 +69,9 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 					word.clear();
 				}
 			}
+			if (doc_dictionary.find(word) == doc_dictionary.end())
+				 doc_dictionary[word]  = 1;
+			else doc_dictionary[word] += 1;
 
 //			std::cout << "  Waiting to add file #" << doc_id << std::endl;
 			m_dictionary_is_being_edited.lock();
@@ -59,13 +94,14 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 			th.join();
 //		std::cout << "- ENDING A THREAD" << std::endl;
 	}
-	for (auto & record : freq_dictionary)
+	for (auto&& record : freq_dictionary)
+	{
 		record.second.resize(record.second.size());
-//	freq_dictionary[word] = { {docID_0, times_3}, {docID_2, times_1} };
+		std::sort(record.second.begin(), record.second.end());
+	}
 }
 
 std::vector<Entry> InvertedIndex::GetWordCount(const std::string& word)
 {
-	///
-	return {};
+	return freq_dictionary[word];
 }

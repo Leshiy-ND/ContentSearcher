@@ -10,10 +10,13 @@ struct Entry
 {
 	std::size_t doc_id, count;
 
-	bool operator == (const Entry& _other) const
-	{
-		return (doc_id == _other.doc_id && count == _other.count);
-	}
+	bool operator == (const Entry& other) const;
+
+	bool operator < (const Entry& other) const;
+	bool operator > (const Entry& other) const;
+
+	bool operator <= (const Entry& other) const;
+	bool operator >= (const Entry& other) const;
 };
 
 class InvertedIndex
