@@ -33,7 +33,7 @@ bool Entry::operator <= (const Entry &other) const
 	return !(*this > other);
 }
 
-bool Entry::operator>=(const Entry &other) const
+bool Entry::operator >= (const Entry &other) const
 {
 	return !(*this < other);
 }
