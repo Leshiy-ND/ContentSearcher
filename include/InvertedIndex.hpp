@@ -6,6 +6,7 @@
 #include <map>
 #include <mutex>
 
+
 struct Entry
 {
 	std::size_t doc_id, count;
@@ -13,6 +14,7 @@ struct Entry
 	bool operator == (const Entry& other) const; // Необходимо для проведения тестов
 	bool operator  < (const Entry& other) const; // Необходимо для сортировки по возростанию
 };
+
 
 class InvertedIndex
 {

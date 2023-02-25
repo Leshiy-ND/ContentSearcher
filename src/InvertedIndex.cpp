@@ -43,15 +43,16 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 				else
 				{
 					if (word.empty()) continue;
-					if (doc_dictionary.find(word) == doc_dictionary.end())
+					if (doc_dictionary.find(word) == doc_dictionary.end()) // v copy_start v
 						 doc_dictionary[word]  = 1;
 					else doc_dictionary[word] += 1;
-					word.clear();
+					word.clear();  //  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  copy_end  ^
 				}
 			}
-			if (doc_dictionary.find(word) == doc_dictionary.end())
+			if (doc_dictionary.find(word) == doc_dictionary.end()) // v copy_start v
 				 doc_dictionary[word]  = 1;
 			else doc_dictionary[word] += 1;
+			word.clear();  //  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  copy_end  ^
 
 			m_dictionary_is_being_edited.lock();
 			for (auto & record : doc_dictionary)
