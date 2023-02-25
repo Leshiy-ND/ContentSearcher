@@ -4,7 +4,6 @@
 
 #include "InvertedIndex.hpp"
 
-//#include <iostream>
 #include <algorithm>
 #include <thread> // CMakeLists.txt + set(CMAKE_CXX_FLAGS -pthread)
 
