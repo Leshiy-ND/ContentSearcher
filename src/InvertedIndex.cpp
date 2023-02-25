@@ -21,23 +21,6 @@ bool Entry::operator < (const Entry &other) const
 	return (this->count < other.count);
 }
 
-bool Entry::operator > (const Entry &other) const
-{
-	if (this->doc_id  > other.doc_id) return true;
-	if (this->doc_id != other.doc_id) return false;
-	return (this->count > other.count);
-}
-
-bool Entry::operator <= (const Entry &other) const
-{
-	return !(*this > other);
-}
-
-bool Entry::operator >= (const Entry &other) const
-{
-	return !(*this < other);
-}
-
 
 void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 {
@@ -45,17 +28,15 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 	freq_dictionary.clear();
 	std::vector<std::thread> vec_of_threads;
 
-	for (auto doc_it = docs.begin(); doc_it != docs.end(); ++doc_it) // Перевести в многопоточость!!!
+	for (auto doc_it = docs.begin(); doc_it != docs.end(); ++doc_it)
 	{
 		if (doc_it->empty()) continue;
 		std::size_t doc_id = doc_it - docs.begin();
 		std::string& doc_link = *doc_it;
-//		std::cout << "- THREAD OF FILE #" << doc_id << std::endl;
 		std::thread th([this, &doc_link, doc_id]
 		{
-//			std::cout << "  Reading file #" << doc_id << std::endl;
 			std::string word;
-			std::map<std::string, std::size_t> doc_dictionary; // Individual Document Word Count
+			std::map<std::string, std::size_t> doc_dictionary; // Индивидуальный для документа словарь ради минимизации конфликта записи
 			for (auto& symbol : doc_link)
 			{
 				if      ('a' <= symbol && symbol <= 'z') word += symbol;
@@ -73,9 +54,7 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 				 doc_dictionary[word]  = 1;
 			else doc_dictionary[word] += 1;
 
-//			std::cout << "  Waiting to add file #" << doc_id << std::endl;
 			m_dictionary_is_being_edited.lock();
-//			std::cout << "  Adding file #" << doc_id << std::endl;
 			for (auto & record : doc_dictionary)
 			{
 				if (freq_dictionary.find(record.first) == freq_dictionary.end())
@@ -83,7 +62,6 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 				else
 					freq_dictionary[record.first].push_back({doc_id, record.second});
 			}
-//			std::cout << "  File #" << doc_id << " is added" << std::endl;
 			m_dictionary_is_being_edited.unlock();
 		});
 		vec_of_threads.push_back(std::move(th));
@@ -92,7 +70,6 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 	{
 		if (th.joinable())
 			th.join();
-//		std::cout << "- ENDING A THREAD" << std::endl;
 	}
 	for (auto&& record : freq_dictionary)
 	{

@@ -10,13 +10,8 @@ struct Entry
 {
 	std::size_t doc_id, count;
 
-	bool operator == (const Entry& other) const;
-
-	bool operator < (const Entry& other) const;
-	bool operator > (const Entry& other) const;
-
-	bool operator <= (const Entry& other) const;
-	bool operator >= (const Entry& other) const;
+	bool operator == (const Entry& other) const; // Необходимо для проведения тестов
+	bool operator  < (const Entry& other) const; // Необходимо для сортировки по возростанию
 };
 
 class InvertedIndex
