@@ -42,7 +42,7 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 						tmp_int += entry.count;
 					tmp_dict[word] = tmp_int;
 				}
-				word.clear(); // ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  copy_end  ^
+				word.clear();  //  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  copy_end  ^
 			}
 		}
 		if (tmp_dict.find(word) == tmp_dict.end()) // v copy_start v
@@ -53,7 +53,7 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 				tmp_int += entry.count;
 			tmp_dict[word] = tmp_int;
 		}
-		word.clear(); // ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  copy_end  ^
+		word.clear();  //  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  copy_end  ^
 
 		std::vector<std::string> unique_words;
 		unique_words.reserve(tmp_dict.size());
@@ -71,5 +71,6 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 
 		///...
 	}
+	///...
 	return {};
 }
