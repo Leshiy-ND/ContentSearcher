@@ -63,11 +63,12 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 		{
 			for (std::size_t j = i+1; j < unique_words.size(); ++j)
 			{
-				if (tmp_dict[unique_words[i]] < tmp_dict[unique_words[j]])
+				if (tmp_dict[unique_words[i]] > tmp_dict[unique_words[j]])
 					std::swap(unique_words[i], unique_words[j]);
 			}
 		}
 		tmp_dict.clear();
+
 
 		///...
 	}
