@@ -28,6 +28,7 @@ public:
 	 * частоту слов встречаемых в запросе
 	 */
 	explicit SearchServer(InvertedIndex& idx) : index(idx) {};
+	SearchServer() = delete;
 
 	/**
 	 * Метод обработки поисковых запросов
