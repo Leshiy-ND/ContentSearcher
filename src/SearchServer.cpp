@@ -25,8 +25,17 @@ bool RelativeIndex::operator<(const RelativeIndex &other) const
 std::vector<std::vector<RelativeIndex>> SearchServer::search(
 		const std::vector<std::string>& queries_input)
 {
+	std::vector<std::vector<RelativeIndex>> result;
+
 	for (auto&& query : queries_input)
 	{
+		if (query.empty())
+		{
+			result.emplace_back();
+			continue;
+		}
+		// If there is no query, then result of the query is false (pre-step 6)
+
 		std::string word;
 		std::map<std::string, std::size_t> tmp_dict; // After being filled, gets translated to vec<str> unique_words
 		for (auto&& symbol : query)
@@ -88,9 +97,15 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 			}
 		// List of docs containing all words of the query (steps 4-5)
 
+		if (doc_ids.empty())
+		{
+			result.emplace_back();
+			continue;
+		}
+		// If there is no matching docs, then result of the query is false (step 6)
+
 		///...
 	}
 	///...
-	printf("hi");
 	return {};
 }
