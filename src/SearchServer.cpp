@@ -56,6 +56,7 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 			tmp_dict[word] = tmp_int;
 		}
 		word.clear();  //  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  copy_end  ^
+		// The query is separated into not unique words (steps 0.0-0.5)
 
 		std::vector<std::string> unique_words;
 		unique_words.reserve(tmp_dict.size());
@@ -90,5 +91,6 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 		///...
 	}
 	///...
+	printf("hi");
 	return {};
 }
