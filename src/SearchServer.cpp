@@ -3,38 +3,31 @@
 //
 
 #include <map>
-#include <numeric>
 #include <set>
-#include <iostream>
+#include <cmath>
 #include "SearchServer.hpp"
 
 
 bool RelativeIndex::operator==(const RelativeIndex& other) const
 {
-	return (this->doc_id == other.doc_id && this->rank == other.rank);
-}
-
-bool RelativeIndex::operator<(const RelativeIndex &other) const
-{
-	if (this->doc_id  < other.doc_id) return true;
-	if (this->doc_id != other.doc_id) return false;
-	return (this->rank < other.rank);
+	return (this->doc_id == other.doc_id && fabsf(this->rank - other.rank) < .01f);
 }
 
 
 std::vector<std::vector<RelativeIndex>> SearchServer::search(
 		const std::vector<std::string>& queries_input)
 {
-	std::vector<std::vector<RelativeIndex>> result;
+	std::vector<std::vector<RelativeIndex>> resultTotal;
+	resultTotal.reserve(queries_input.size());
 
 	for (auto&& query : queries_input)
 	{
 		if (query.empty())
 		{
-			result.emplace_back();
+			resultTotal.emplace_back();
 			continue;
 		}
-		// If there is no query, then result of the query is false (pre-step 6)
+		// If there is no query, then resultTotal of the query is false (pre-step 6)
 
 		std::string word;
 		std::map<std::string, std::size_t> tmp_dict; // After being filled, gets translated to vec<str> unique_words
@@ -67,22 +60,18 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 		word.clear();  //  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  copy_end  ^
 		// The query is separated into not unique words (steps 0.0-0.5)
 
-		std::vector<std::string> unique_words;
+		std::vector<std::string> unique_words; // It's a vector (not a set) as we care about order
 		unique_words.reserve(tmp_dict.size());
 		for (auto&& word_n_count : tmp_dict)
 			unique_words.emplace_back(word_n_count.first);
-		for (std::size_t i = 0; i < unique_words.size() - 1; ++i)
-		{
-			for (std::size_t j = i+1; j < unique_words.size(); ++j)
-			{
-				if (tmp_dict[unique_words[i]] > tmp_dict[unique_words[j]])
-					std::swap(unique_words[i], unique_words[j]);
-			}
-		}
+		for (auto itI = unique_words.begin(); itI < unique_words.end() - 1; ++itI)
+			for (auto itJ = itI + 1; itJ < unique_words.end(); ++itJ)
+				if (tmp_dict[*itI] > tmp_dict[*itJ])
+					std::iter_swap(itI, itJ);
 		tmp_dict.clear();
 		// Words of the query are sorted into vec<str> unique_words by rarity (steps 1-3)
 
-		std::set<std::size_t> doc_ids;
+		std::set<std::size_t> doc_ids; // It's a set (not a vector) as it easier for managing unique stuff
 		if (!unique_words.empty())
 			for (auto&& entry : index.GetWordCount(unique_words[0]))
 				doc_ids.insert(entry.doc_id);
@@ -99,13 +88,50 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 
 		if (doc_ids.empty())
 		{
-			result.emplace_back();
+			resultTotal.emplace_back();
 			continue;
 		}
-		// If there is no matching docs, then result of the query is false (step 6)
+		// If there is no matching docs, then resultTotal of the query is false (step 6)
 
-		///...
+		std::map<std::size_t, std::size_t> absRelevances; // {doc_id, absRelevance}
+		for (auto&& unique_word : unique_words)
+		{
+			auto entries = index.GetWordCount(unique_word);
+			for (auto&& entry : entries)
+			{
+				if (doc_ids.find(entry.doc_id) == doc_ids.end()) // If it's entry of non valuable document
+					continue;
+				if (absRelevances.find(entry.doc_id) == absRelevances.end())
+					absRelevances[entry.doc_id] = 0;
+				absRelevances[entry.doc_id] += entry.count;
+			}
+		}
+		unique_words.clear();
+		doc_ids.clear(); // From now on all valuable documents are mentioned in map absRelevances
+
+		std::size_t highestRelevance = 1;
+		for (auto&& absRelevance : absRelevances)
+			if (highestRelevance < absRelevance.second)
+				highestRelevance = absRelevance.second;
+
+		std::vector<RelativeIndex> resultOfQuery; // Part of resultTotal (vector (of i) for vector of vectors (of i))
+		resultOfQuery.reserve(doc_ids.size());
+		for (auto&& absRelevance : absRelevances)
+		{
+			auto& doc_id = absRelevance.first;
+			float rank = (float)absRelevance.second / (float)highestRelevance;
+			resultOfQuery.push_back({doc_id, rank});
+		}
+		absRelevances.clear();
+		// Relative relevances are calculated (step 7)
+
+		for (auto itI = resultOfQuery.begin(); itI < resultOfQuery.end() - 1; ++itI)
+			for (auto itJ = itI + 1; itJ < resultOfQuery.end(); ++itJ)
+				if (itI->rank < itJ->rank)
+					std::iter_swap(itI, itJ);
+		// Results are sorted by relative relevances (step 8)
+
+		resultTotal.emplace_back(std::move(resultOfQuery));
 	}
-	///...
-	return {};
+	return resultTotal;
 }

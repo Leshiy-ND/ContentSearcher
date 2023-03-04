@@ -27,7 +27,7 @@ int main()
 	SearchServer server(idx);
 	server.search({
 		"great london",
-		"the",
+		"",
 		"is the"
 	});
 	std::cout << "Goodbye, World!" << std::endl;

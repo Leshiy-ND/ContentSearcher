@@ -12,7 +12,6 @@ struct RelativeIndex
 	float       rank;
 
 	bool operator == (const RelativeIndex& other) const; // Необходимо для проведения тестов
-	bool operator  < (const RelativeIndex& other) const; // Необходимо для сортировки по возростанию
 };
 
 
