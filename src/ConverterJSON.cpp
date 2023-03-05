@@ -83,14 +83,16 @@ std::vector<std::string> ConverterJSON::GetRequests()
 	return json["requests"].get<std::vector<std::string>>();
 }
 
-void ConverterJSON::PutAnswers(std::vector<std::vector<std::pair<int, float>>> answers)
+void ConverterJSON::PutAnswers(std::vector<std::vector<RelativeIndex>> answers)
 {
 	char zfill = answers.size() / 10 + 1;
 	if (zfill < 3) zfill = 3;
 	Json json;
+	auto max_responses = GetResponsesLimit();
 
 	for (auto it = answers.begin(); it < answers.end(); ++it)
 	{
+		if (it - answers.begin() == max_responses) break;
 		std::string reqKey = std::to_string(it - answers.begin() + 1);
 		reqKey.insert(0, zfill - reqKey.size(), '0');
 		reqKey.insert(0, "request");
@@ -98,15 +100,15 @@ void ConverterJSON::PutAnswers(std::vector<std::vector<std::pair<int, float>>> a
 		if (it->empty()) continue;
 		if (it->size() == 1)
 		{
-			json["answers"][reqKey]["docid"] = it->begin()->first;
-			json["answers"][reqKey]["rank"] = it->begin()->second;
+			json["answers"][reqKey]["docid"] = it->begin()->doc_id;
+			json["answers"][reqKey]["rank"]  = it->begin()->rank;
 			continue;
 		}
 		Json relevance;
 		for (auto &&pair : *it)
 		{
-			relevance["docid"] = pair.first;
-			relevance["rank"] = pair.second;
+			relevance["docid"] = pair.doc_id;
+			relevance["rank"]  = pair.rank;
 			json["answers"][reqKey]["relevance"].push_back(relevance);
 		}
 	}

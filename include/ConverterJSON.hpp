@@ -4,12 +4,22 @@
 #include <vector>
 #include <string>
 #include <nlohmann/json.hpp>
+#include "SearchServer.hpp"
 using Json = nlohmann::json;
 
 /**
 * Класс для работы с JSON-файлами
 */
 class ConverterJSON {
+private:
+	/**
+	* Метод удостоверения в наличии и полноте файла config.json
+	* @throws std::logic_error с указанием отсутствия или пустоты файла
+	* @exceptsafe Strong - программа завершается, ни на что не влияя
+	* @return Возвращает структурированный Json-объект
+	*/
+	static Json ReadConfigSafely();
+
 public:
 	ConverterJSON() = default;
 	/**
@@ -31,16 +41,7 @@ public:
 	/**
 	* Положить в файл answers.json результаты поисковых запросов
 	*/
-	static void PutAnswers(std::vector<std::vector<std::pair<int, float>>>
-	answers);
-private:
-	/**
-	* Метод удостоверения в наличии и полноте файла config.json
-	* @throws std::logic_error с указанием отсутствия или пустоты файла
-	* @exceptsafe Strong - программа завершается, ни на что не влияя
-	* @return Возвращает структурированный Json-объект
-	*/
-	static Json ReadConfigSafely();
+	static void PutAnswers(std::vector<std::vector<RelativeIndex>> answers);
 };
 
 #endif //CONTENTSEARCHER_CONVERTERJSON_HPP
