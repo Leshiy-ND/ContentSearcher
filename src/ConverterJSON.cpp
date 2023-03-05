@@ -45,7 +45,7 @@ std::vector<std::string> ConverterJSON::GetTextDocuments()
 		std::ifstream document(path);
 		if (document.is_open())
 		{
-			buffer.clear();
+			buffer.str(std::string());
 			buffer << document.rdbuf();
 			texts.emplace_back(buffer.str());
 			document.close();
@@ -92,7 +92,6 @@ void ConverterJSON::PutAnswers(std::vector<std::vector<RelativeIndex>> answers)
 
 	for (auto it = answers.begin(); it < answers.end(); ++it)
 	{
-		if (it - answers.begin() == max_responses) break;
 		std::string reqKey = std::to_string(it - answers.begin() + 1);
 		reqKey.insert(0, zfill - reqKey.size(), '0');
 		reqKey.insert(0, "request");
@@ -105,11 +104,13 @@ void ConverterJSON::PutAnswers(std::vector<std::vector<RelativeIndex>> answers)
 			continue;
 		}
 		Json relevance;
+		int counter = 0;
 		for (auto &&pair : *it)
 		{
 			relevance["docid"] = pair.doc_id;
 			relevance["rank"]  = pair.rank;
 			json["answers"][reqKey]["relevance"].push_back(relevance);
+			if (++counter == max_responses) break;
 		}
 	}
 	std::ofstream oFile("answers.json");

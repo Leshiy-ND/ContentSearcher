@@ -6,12 +6,12 @@
         "request002": {
             "relevance": [
                 {
-                    "docid": 2,
+                    "docid": 3,
                     "rank": 1.0
                 },
                 {
                     "docid": 1,
-                    "rank": 0.6000000238418579
+                    "rank": 0.75
                 }
             ],
             "result": true
@@ -24,12 +24,24 @@
         "request004": {
             "relevance": [
                 {
+                    "docid": 1,
+                    "rank": 1.0
+                },
+                {
                     "docid": 2,
                     "rank": 1.0
                 },
                 {
-                    "docid": 1,
-                    "rank": 0.5
+                    "docid": 3,
+                    "rank": 1.0
+                },
+                {
+                    "docid": 4,
+                    "rank": 1.0
+                },
+                {
+                    "docid": 5,
+                    "rank": 1.0
                 }
             ],
             "result": true
