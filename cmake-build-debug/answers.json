@@ -4,47 +4,25 @@
             "result": false
         },
         "request002": {
+            "result": true,
             "relevance": [
-                {
-                    "docid": 3,
-                    "rank": 1.0
-                },
-                {
-                    "docid": 1,
-                    "rank": 0.75
-                }
-            ],
-            "result": true
+                { "docid": 3, "rank": 1.0  },
+                { "docid": 1, "rank": 0.75 }
+            ]
         },
         "request003": {
-            "docid": 2,
-            "rank": 1.0,
-            "result": true
+            "result": true,
+            "docid": 2, "rank": 1.0
         },
         "request004": {
+            "result": true,
             "relevance": [
-                {
-                    "docid": 1,
-                    "rank": 1.0
-                },
-                {
-                    "docid": 2,
-                    "rank": 1.0
-                },
-                {
-                    "docid": 3,
-                    "rank": 1.0
-                },
-                {
-                    "docid": 4,
-                    "rank": 1.0
-                },
-                {
-                    "docid": 5,
-                    "rank": 1.0
-                }
-            ],
-            "result": true
+                { "docid": 1, "rank": 1.0 },
+                { "docid": 2, "rank": 1.0 },
+                { "docid": 3, "rank": 1.0 },
+                { "docid": 4, "rank": 1.0 },
+                { "docid": 5, "rank": 1.0 }
+            ]
         }
     }
 }
