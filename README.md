@@ -1,4 +1,2 @@
 # ContentSearcher
-by Nikolay Danilin, aka Leshiy_ND
----
-sd
+Program for searching documents.
