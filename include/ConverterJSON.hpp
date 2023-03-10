@@ -41,7 +41,7 @@ public:
 	/**
 	* Положить в файл answers.json результаты поисковых запросов
 	*/
-	static void PutAnswers(std::vector<std::vector<RelativeIndex>> answers);
+	static void PutAnswers(const std::vector<std::vector<RelativeIndex>>& answers);
 };
 
 #endif //CONTENTSEARCHER_CONVERTERJSON_HPP

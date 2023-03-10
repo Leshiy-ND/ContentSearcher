@@ -83,7 +83,7 @@ std::vector<std::string> ConverterJSON::GetRequests()
 	return json["requests"].get<std::vector<std::string>>();
 }
 
-void ConverterJSON::PutAnswers(std::vector<std::vector<RelativeIndex>> answers)
+void ConverterJSON::PutAnswers(const std::vector<std::vector<RelativeIndex>>& answers)
 {
 	char zfill = answers.size() / 10 + 1;
 	if (zfill < 3) zfill = 3;
