@@ -1,11 +1,8 @@
-//
-// Created by user-leshiy on 25.02.23.
-//
+#include "SearchServer.hpp"
 
 #include <map>
 #include <set>
 #include <cmath>
-#include "SearchServer.hpp"
 
 
 bool RelativeIndex::operator==(const RelativeIndex& other) const

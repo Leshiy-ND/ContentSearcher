@@ -1,7 +1,3 @@
-//
-// Created by user-leshiy on 18.02.23.
-//
-
 #include "InvertedIndex.hpp"
 
 #include <algorithm>
