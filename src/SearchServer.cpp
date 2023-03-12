@@ -27,10 +27,10 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 			resultTotal.emplace_back();
 			continue;
 		}
-		// If there is no query, then resultTotal of the query is false (pre-step 6)
+		// Если запрос пуст, то ответа на него не будет (предварительный шаг 6)
 
 		std::string word;
-		std::map<std::string, std::size_t> tmp_dict; // After being filled, gets translated to vec<str> unique_words
+		std::map<std::string, std::size_t> tmp_dict; // После заполнения, переведётся в vec<str> unique_words
 		for (auto&& symbol : query)
 		{
 			if      ('a' <= symbol && symbol <= 'z') word += symbol;
@@ -58,9 +58,9 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 			tmp_dict[word] = tmp_int;
 		}
 		word.clear();  //  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  copy_end  ^
-		// The query is separated into not unique words (steps 0.0-0.5)
+		// Запрос разделён на слова с приложенной суммой вхождений (шаг 0.5)
 
-		std::vector<std::string> unique_words; // It's a vector (not a set) as we care about order
+		std::vector<std::string> unique_words; // Это vector (не set), так как нам важен порядок элементов
 		unique_words.reserve(tmp_dict.size());
 		for (auto&& word_n_count : tmp_dict)
 			unique_words.emplace_back(word_n_count.first);
@@ -69,9 +69,9 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 				if (tmp_dict[*itI] > tmp_dict[*itJ])
 					std::iter_swap(itI, itJ);
 		tmp_dict.clear();
-		// Words of the query are sorted into vec<str> unique_words by rarity (steps 1-3)
+		// Слова запроса рассортированы в vec<str> unique_words по частоте вхождения в документы (шаги 1-3)
 
-		std::set<std::size_t> doc_ids; // It's a set (not a vector) as it easier for managing unique stuff
+		std::set<std::size_t> doc_ids; // Это set (не vector), так как он удобнее для хранения уникальных значений
 		if (!unique_words.empty())
 			for (auto&& entry : index.GetWordCount(unique_words[0]))
 				doc_ids.insert(entry.doc_id);
@@ -84,14 +84,14 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 						matching_docs.insert(entry.doc_id);
 				doc_ids = matching_docs;
 			}
-		// List of docs containing all words of the query (steps 4-5)
+		// Составлен список подходящих по запросу документов (шаги 4-5)
 
 		if (doc_ids.empty())
 		{
 			resultTotal.emplace_back();
 			continue;
 		}
-		// If there is no matching docs, then resultTotal of the query is false (step 6)
+		// Если должные документы не найдены (шаг 6)
 
 		std::map<std::size_t, std::size_t> absRelevances; // {doc_id, absRelevance}
 		for (auto&& unique_word : unique_words)
@@ -99,7 +99,7 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 			auto entries = index.GetWordCount(unique_word);
 			for (auto&& entry : entries)
 			{
-				if (doc_ids.find(entry.doc_id) == doc_ids.end()) // If it's entry of non valuable document
+				if (doc_ids.find(entry.doc_id) == doc_ids.end()) // Если это вхождение неудобоваримово документа
 					continue;
 				if (absRelevances.find(entry.doc_id) == absRelevances.end())
 					absRelevances[entry.doc_id] = 0;
@@ -107,14 +107,14 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 			}
 		}
 		unique_words.clear();
-		doc_ids.clear(); // From now on all valuable documents are mentioned in map absRelevances
+		doc_ids.clear(); // Отныне все должные документы перечислены в map absRelevances
 
 		std::size_t highestRelevance = 1;
 		for (auto&& absRelevance : absRelevances)
 			if (highestRelevance < absRelevance.second)
 				highestRelevance = absRelevance.second;
 
-		std::vector<RelativeIndex> resultOfQuery; // Part of resultTotal (vector (of i) for vector of vectors (of i))
+		std::vector<RelativeIndex> resultOfQuery; // Составляющая resultTotal (vector (of i) для vector of vectors (of i))
 		resultOfQuery.reserve(doc_ids.size());
 		for (auto&& absRelevance : absRelevances)
 		{
@@ -123,13 +123,13 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 			resultOfQuery.push_back({doc_id, rank});
 		}
 		absRelevances.clear();
-		// Relative relevances are calculated (step 7)
+		// Относительные релевантности подсчитаны (шаг 7)
 
 		for (auto itI = resultOfQuery.begin(); itI < resultOfQuery.end() - 1; ++itI)
 			for (auto itJ = itI + 1; itJ < resultOfQuery.end(); ++itJ)
 				if (itI->rank < itJ->rank)
 					std::iter_swap(itI, itJ);
-		// Results are sorted by relative relevances (step 8)
+		// Результаты отсортированы по Относительной релевантности (шаг 8)
 
 		resultTotal.emplace_back(std::move(resultOfQuery));
 	}
