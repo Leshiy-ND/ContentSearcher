@@ -88,7 +88,6 @@ void ConverterJSON::PutAnswers(const std::vector<std::vector<RelativeIndex>>& an
 	char zfill = answers.size() / 10 + 1;
 	if (zfill < 3) zfill = 3;
 	Json json;
-	auto max_responses = GetResponsesLimit();
 
 	for (auto it = answers.begin(); it < answers.end(); ++it)
 	{
@@ -104,13 +103,11 @@ void ConverterJSON::PutAnswers(const std::vector<std::vector<RelativeIndex>>& an
 			continue;
 		}
 		Json relevance;
-		int counter = 0;
 		for (auto &&pair : *it)
 		{
 			relevance["docid"] = pair.doc_id;
 			relevance["rank"]  = pair.rank;
 			json["answers"][reqKey]["relevance"].push_back(relevance);
-			if (++counter == max_responses) break;
 		}
 	}
 	std::ofstream oFile("answers.json");

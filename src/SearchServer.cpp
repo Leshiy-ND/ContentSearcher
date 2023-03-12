@@ -3,6 +3,7 @@
 #include <map>
 #include <set>
 #include <cmath>
+#include "ConverterJSON.hpp"
 
 
 bool RelativeIndex::operator==(const RelativeIndex& other) const
@@ -16,6 +17,7 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 {
 	std::vector<std::vector<RelativeIndex>> resultTotal;
 	resultTotal.reserve(queries_input.size());
+	auto max_responses = ConverterJSON::GetResponsesLimit();
 
 	for (auto&& query : queries_input)
 	{
@@ -75,11 +77,9 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 		if (unique_words.size() > 1)
 			for (auto it = unique_words.begin() + 1; it != unique_words.end(); ++it)
 			{
-				std::set<std::size_t> matching_docs;
-				for (auto &&entry: index.GetWordCount(*it))
-					if (doc_ids.find(entry.doc_id) != doc_ids.end())
-						matching_docs.insert(entry.doc_id);
-				doc_ids = matching_docs;
+				for (auto &&entry : index.GetWordCount(*it))
+					if (doc_ids.find(entry.doc_id) == doc_ids.end())
+						doc_ids.insert(entry.doc_id);
 			}
 		// Составлен список подходящих по запросу документов (шаги 4-5)
 
@@ -122,12 +122,20 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(
 		absRelevances.clear();
 		// Относительные релевантности подсчитаны (шаг 7)
 
-		for (auto itI = resultOfQuery.begin(); itI < resultOfQuery.end() - 1; ++itI)
-			for (auto itJ = itI + 1; itJ < resultOfQuery.end(); ++itJ)
-				if (itI->rank < itJ->rank)
-					std::iter_swap(itI, itJ);
-		// Результаты отсортированы по Относительной релевантности (шаг 8)
+		auto stopPoint = resultOfQuery.end() - 1;
+		if (stopPoint > resultOfQuery.begin() + max_responses)
+			stopPoint = resultOfQuery.begin() + max_responses;
 
+		for (auto itI = resultOfQuery.begin(); itI < stopPoint; ++itI)
+			for (auto itJ = itI + 1; itJ < resultOfQuery.end(); ++itJ)
+				if (fabsf(itI->rank - itJ->rank) < .01f && itI->doc_id > itJ->doc_id
+						|| itI->rank < itJ->rank)
+					std::iter_swap(itI, itJ);
+		// Результаты отсортированы по относительной релевантности (Б->М) и id документов (М->Б) (шаг 8)
+		// Только те, что будут выведены
+
+		if (resultOfQuery.size() > max_responses)
+			resultOfQuery.resize(max_responses);
 		resultTotal.emplace_back(std::move(resultOfQuery));
 	}
 	return resultTotal;

@@ -62,12 +62,15 @@ TEST(TestCaseSearchServer, TestTop5)
 			"warsaw is the capital of poland"
 	};
 	const std::vector<std::string> requests = {
-			"moscow the capital of russia"
+			"moscow is the capital of russia"
 	};
 	const std::vector<std::vector<RelativeIndex>> expected = {
 			{
+				{ 7, 1.0   },
 				{14, 1.0   },
-				{7,  5.f/6 }
+				{ 0, 0.667 },
+				{ 1, 0.667 },
+				{ 2, 0.667 }
 			}
 	};
 	TestSearchServerFunctionality(docs, requests, expected);
