@@ -1,6 +1,13 @@
 # ContentSearcher
+
 Program for searching documents.
+
+Read this in other languages: [English](README.md), [Russian](README.ru.md)
+
+_(Incode comments are written in Russian yet.)_
+
 ---
-Read this in different languages: [English](README.md), [Russian](README.ru.md)
----
-Text. Text. Text...
+
+## Project Description
+
+...
