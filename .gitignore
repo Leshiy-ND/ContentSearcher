@@ -1,4 +1,2 @@
 .idea/*
 cmake-build-debug/*
-!cmake-build-debug/*.ContentSearcher
-!cmake-build-debug/*.json
