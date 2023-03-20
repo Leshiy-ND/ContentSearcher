@@ -8,14 +8,28 @@
 
 Json ConverterJSON::ReadConfigSafely()
 {
-	std::ifstream iFile("config.json");
-	if (!iFile.is_open())
-		throw std::logic_error("config file is missing");
-	Json json = Json::parse(iFile);
-	iFile.close();
-	if (!json.contains("config"))
-		throw std::logic_error("config file is empty");
-	return json;
+	try {
+		std::ifstream iFile("config.json");
+		if (!iFile.is_open())
+			throw std::logic_error("config file is missing");
+		Json json;
+		try { json = Json::parse(iFile); }
+		catch (const std::exception &x)
+		{
+			std::cout << "[ERROR]: Poorly formatted config's json file:" << std::endl;
+			std::cout << "    " << x.what() << std::endl;
+			exit(65);
+		}
+		iFile.close();
+		if (!json.contains("config"))
+			throw std::logic_error("config file is empty");
+		return json;
+	}
+	catch (const std::exception &x)
+	{
+		std::cout << "[ERROR]: " << x.what() << std::endl;
+		exit(64);
+	}
 }
 
 std::vector<std::string> ConverterJSON::GetTextDocuments()
@@ -71,16 +85,31 @@ int ConverterJSON::GetResponsesLimit()
 
 std::vector<std::string> ConverterJSON::GetRequests()
 {
-	std::ifstream iFile("requests.json");
-	if (!iFile.is_open())
-		throw std::logic_error("requests file is missing");
-	Json json = Json::parse(iFile);
-	iFile.close();
+	try
+	{
+		std::ifstream iFile("requests.json");
+		if (!iFile.is_open())
+			throw std::logic_error("requests file is missing");
+		Json json;
+		try { json = Json::parse(iFile); }
+		catch (const std::exception &x)
+		{
+			std::cout << "[ERROR]: Poorly formatted requests' json file:" << std::endl;
+			std::cout << "    " << x.what() << std::endl;
+			exit(65);
+		}
+		iFile.close();
 
-	if (!json.contains("requests"))
-		throw std::logic_error("requests file is empty");
+		if (!json.contains("requests"))
+			throw std::logic_error("requests file is empty");
 
-	return json["requests"].get<std::vector<std::string>>();
+		return json["requests"].get<std::vector<std::string>>();
+	}
+	catch (const std::exception &x)
+	{
+		std::cout << "[ERROR]: " << x.what() << std::endl;
+		exit(64);
+	}
 }
 
 void ConverterJSON::PutAnswers(const std::vector<std::vector<RelativeIndex>>& answers)
@@ -111,6 +140,11 @@ void ConverterJSON::PutAnswers(const std::vector<std::vector<RelativeIndex>>& an
 		}
 	}
 	std::ofstream oFile("answers.json");
+	if (!oFile.is_open())
+	{
+		std::cout << "[ERROR]: Unable to create or modify answers.json" << std::endl;
+		exit(64);
+	}
 	oFile << std::setw(4) << json;
 	oFile.close();
 }
