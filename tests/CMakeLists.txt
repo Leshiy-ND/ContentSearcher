@@ -11,10 +11,10 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
-file(GLOB HEADERS "${PROJECT_SOURCE_DIR}/include/*.hpp")
-file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
+file(GLOB        HEADERS "${PROJECT_SOURCE_DIR}/include/*.hpp")
+file(GLOB        SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 list(REMOVE_ITEM SOURCES "${PROJECT_SOURCE_DIR}/src/main.cpp")
-file(GLOB TESTS "${PROJECT_SOURCE_DIR}/tests/*.cpp")
+file(GLOB        TESTS   "${PROJECT_SOURCE_DIR}/tests/*.cpp")
 
 add_executable(ContentSearcher_tst ${HEADERS} ${SOURCES} ${TESTS})
 
