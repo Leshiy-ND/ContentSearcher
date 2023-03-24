@@ -23,6 +23,12 @@ Json ConverterJSON::ReadConfigSafely()
 		iFile.close();
 		if (!json.contains("config"))
 			throw std::logic_error("config file is empty");
+
+		if (!json["config"].contains("version"))
+			throw std::logic_error("config.json has no file version");
+		if (APPLICATION_VERSION != json["config"]["version"])
+			throw std::logic_error("config.json has incorrect file version");
+
 		return json;
 	}
 	catch (const std::exception &x)
@@ -35,11 +41,6 @@ Json ConverterJSON::ReadConfigSafely()
 std::vector<std::string> ConverterJSON::GetTextDocuments()
 {
 	Json json = ReadConfigSafely();
-
-	if (!json["config"].contains("version"))
-		throw std::logic_error("config.json has no file version");
-	if (APPLICATION_VERSION != json["config"]["version"])
-		throw std::logic_error("config.json has incorrect file version");
 
 	if (json["config"].contains("name"))
 		std::cout << "[MESSAGE]: Starting " << std::string(json["config"]["name"]) << "..." << std::endl;
@@ -75,12 +76,17 @@ std::vector<std::string> ConverterJSON::GetTextDocuments()
 
 int ConverterJSON::GetResponsesLimit()
 {
-	Json json = ReadConfigSafely();
-
-	if (json["config"].contains("max_responses"))
+	try
+	{
+		std::ifstream iFile("config.json");
+		Json json = Json::parse(iFile);
+		iFile.close();
 		return json["config"]["max_responses"];
-	else
+	}
+	catch (const std::exception &x)
+	{
 		return 5;
+	}
 }
 
 std::vector<std::string> ConverterJSON::GetRequests()
