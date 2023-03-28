@@ -39,25 +39,16 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 				else
 				{
 					if (word.empty()) continue;
-					if (doc_dictionary.find(word) == doc_dictionary.end()) // v copy_start v
-						 doc_dictionary[word]  = 1;
-					else doc_dictionary[word] += 1;
-					word.clear();  //  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  copy_end  ^
+					doc_dictionary[word]++; // v copy_start v
+					word.clear();  // ^  ^  ^  ^  copy_end  ^
 				}
 			}
-			if (doc_dictionary.find(word) == doc_dictionary.end()) // v copy_start v
-				 doc_dictionary[word]  = 1;
-			else doc_dictionary[word] += 1;
-			word.clear();  //  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  ^  copy_end  ^
+			doc_dictionary[word]++; // v copy_start v
+			word.clear();  // ^  ^  ^  ^  copy_end  ^
 
 			m_dictionary_is_being_edited.lock();
 			for (auto & record : doc_dictionary)
-			{
-				if (freq_dictionary.find(record.first) == freq_dictionary.end())
-					freq_dictionary[record.first] = { {doc_id, record.second} };
-				else
-					freq_dictionary[record.first].push_back({doc_id, record.second});
-			}
+				freq_dictionary[record.first].push_back({doc_id, record.second});
 			m_dictionary_is_being_edited.unlock();
 		});
 		vec_of_threads.push_back(std::move(th));
@@ -69,7 +60,7 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs)
 	}
 	for (auto&& record : freq_dictionary)
 	{
-		record.second.resize(record.second.size());
+		record.second.shrink_to_fit();
 		std::sort(record.second.begin(), record.second.end());
 	}
 }
