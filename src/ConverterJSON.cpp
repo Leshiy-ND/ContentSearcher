@@ -8,34 +8,26 @@
 
 Json ConverterJSON::ReadConfigSafely()
 {
-	try {
-		std::ifstream iFile("config.json");
-		if (!iFile.is_open())
-			throw std::logic_error("config file is missing");
-		Json json;
-		try { json = Json::parse(iFile); }
-		catch (const std::exception &x)
-		{
-			std::cout << "[ERROR]: Poorly formatted config's json file:" << std::endl;
-			std::cout << "    " << x.what() << std::endl;
-			exit(65);
-		}
-		iFile.close();
-		if (!json.contains("config"))
-			throw std::logic_error("config file is empty");
-
-		if (!json["config"].contains("version"))
-			throw std::logic_error("config.json has no file version");
-		if (APPLICATION_VERSION != json["config"]["version"])
-			throw std::logic_error("config.json has incorrect file version");
-
-		return json;
-	}
+	std::ifstream iFile("config.json");
+	if (!iFile.is_open())
+		throw std::logic_error("config file is missing");
+	Json json;
+	try { json = Json::parse(iFile); }
 	catch (const std::exception &x)
 	{
-		std::cout << "[ERROR]: " << x.what() << std::endl;
-		exit(64);
+		std::string error_message = "Poorly formatted config's json file:\n    ";
+		throw std::logic_error(error_message + x.what());
 	}
+	iFile.close();
+	if (!json.contains("config"))
+		throw std::logic_error("config file is empty");
+
+	if (!json["config"].contains("version"))
+		throw std::logic_error("config.json has no file version");
+	if (APPLICATION_VERSION != json["config"]["version"])
+		throw std::logic_error("config.json has incorrect file version");
+
+	return json;
 }
 
 std::vector<std::string> ConverterJSON::GetTextDocuments()
@@ -91,31 +83,22 @@ int ConverterJSON::GetResponsesLimit()
 
 std::vector<std::string> ConverterJSON::GetRequests()
 {
-	try
-	{
-		std::ifstream iFile("requests.json");
-		if (!iFile.is_open())
-			throw std::logic_error("requests file is missing");
-		Json json;
-		try { json = Json::parse(iFile); }
-		catch (const std::exception &x)
-		{
-			std::cout << "[ERROR]: Poorly formatted requests' json file:" << std::endl;
-			std::cout << "    " << x.what() << std::endl;
-			exit(65);
-		}
-		iFile.close();
-
-		if (!json.contains("requests"))
-			throw std::logic_error("requests file is empty");
-
-		return json["requests"].get<std::vector<std::string>>();
-	}
+	std::ifstream iFile("requests.json");
+	if (!iFile.is_open())
+		throw std::logic_error("requests file is missing");
+	Json json;
+	try { json = Json::parse(iFile); }
 	catch (const std::exception &x)
 	{
-		std::cout << "[ERROR]: " << x.what() << std::endl;
-		exit(64);
+		std::string error_message = "Poorly formatted requests' json file:\n    ";
+		throw std::logic_error(error_message + x.what());
 	}
+	iFile.close();
+
+	if (!json.contains("requests"))
+		throw std::logic_error("requests file is empty");
+
+	return json["requests"].get<std::vector<std::string>>();
 }
 
 void ConverterJSON::PutAnswers(const std::vector<std::vector<RelativeIndex>>& answers)
