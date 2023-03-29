@@ -31,12 +31,12 @@ public:
 
 	/**
 	 * Метод обработки поисковых запросов
-	 * @param queries_input - поисковые запросы взятые из файла requests.json
+	 * @param requests_input - поисковые запросы взятые из файла requests.json
 	 * @return Возвращает отсортированный список релевантных ответов
 	 * для заданных запросов
 	 */
 	std::vector<std::vector<RelativeIndex>> search(
-			const std::vector<std::string>& queries_input);
+			const std::vector<std::string>& requests_input);
 };
 
 
