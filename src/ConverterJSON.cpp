@@ -147,12 +147,14 @@ void ConverterJSON::PutAnswers(const std::vector<std::vector<RelativeIndex>>& an
 		}
 	}
 	std::ofstream oFile("answers.json");
-	if (!oFile.is_open())
+	if (oFile.is_open())
 	{
-		std::cout << "[ERROR]: Unable to create or modify answers.json" << std::endl;
-		exit(64);
+		oFile << std::setw(4) << json;
+		oFile.close();
+		std::cout << "[MESSAGE]: The answers were put into answers.json" << std::endl;
 	}
-	oFile << std::setw(4) << json;
-	oFile.close();
-	std::cout << "[MESSAGE]: The answers were put into answers.json" << std::endl;
+	else
+	{
+		std::cout << "[WARNING]: Unable to create or modify answers.json" << std::endl;
+	}
 }
