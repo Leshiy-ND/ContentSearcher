@@ -109,7 +109,6 @@ std::vector<std::string> ConverterJSON::GetRequests()
 		if (!json.contains("requests"))
 			throw std::logic_error("requests file is empty");
 
-		std::cout << "[MESSAGE]: The requests were read from requests.json" << std::endl;
 		return json["requests"].get<std::vector<std::string>>();
 	}
 	catch (const std::exception &x)
