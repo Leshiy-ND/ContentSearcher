@@ -22,22 +22,26 @@ private:
 
 public:
 	ConverterJSON() = default;
+
 	/**
 	* Метод получения содержимого файлов
 	* @return Возвращает список с содержимым файлов перечисленных
 	* в config.json
 	*/
 	static std::vector<std::string> GetTextDocuments();
+
 	/**
 	* Метод считывает поле max_responses для определения
 	* @return Возвращает предельное количества ответов на один запрос
 	*/
 	static int GetResponsesLimit();
+
 	/**
 	* Метод получения запросов из файла requests.json
 	* @return Возвращает список запросов из файла requests.json
 	*/
 	static std::vector<std::string> GetRequests();
+	
 	/**
 	* Положить в файл answers.json результаты поисковых запросов
 	*/
