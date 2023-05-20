@@ -22,6 +22,7 @@ This project was completed as a final work on the C++ course from SkillBox.
 
 - programming language **С++**
 - development environment **CLion**
+- development environment **VSCode**
 - build automation tool **CMake - Ninja**
 - compiler **GCC v12.2.1**
 - operating system **Manjaro KDE (Arch Linux)**
