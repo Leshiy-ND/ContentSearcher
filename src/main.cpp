@@ -1,7 +1,7 @@
 #include <iostream>
-#include "ConverterJSON.hpp"
-#include "InvertedIndex.hpp"
-#include "SearchServer.hpp"
+#include "ConverterJSON.h"
+#include "InvertedIndex.h"
+#include "SearchServer.h"
 
 int main()
 {

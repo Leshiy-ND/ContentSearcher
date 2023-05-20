@@ -1,10 +1,10 @@
-#ifndef CONTENTSEARCHER_CONVERTERJSON_HPP
-#define CONTENTSEARCHER_CONVERTERJSON_HPP
+#ifndef CONTENTSEARCHER_CONVERTERJSON_H
+#define CONTENTSEARCHER_CONVERTERJSON_H
 
 #include <vector>
 #include <string>
 #include <nlohmann/json.hpp>
-#include "SearchServer.hpp"
+#include "SearchServer.h"
 using Json = nlohmann::json;
 
 /**
@@ -48,4 +48,4 @@ public:
 	static void PutAnswers(const std::vector<std::vector<RelativeIndex>>& answers);
 };
 
-#endif //CONTENTSEARCHER_CONVERTERJSON_HPP
+#endif //CONTENTSEARCHER_CONVERTERJSON_H

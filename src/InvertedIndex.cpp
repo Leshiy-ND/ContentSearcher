@@ -1,4 +1,4 @@
-#include "InvertedIndex.hpp"
+#include "InvertedIndex.h"
 
 #include <algorithm>
 #include <thread> // CMakeLists.txt + set(CMAKE_CXX_FLAGS -pthread)
