@@ -1,4 +1,4 @@
-#include "InvertedIndex.hpp"
+#include "InvertedIndex.h"
 #include <gtest/gtest.h>
 
 

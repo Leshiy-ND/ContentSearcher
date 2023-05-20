@@ -1,4 +1,4 @@
-#include "SearchServer.hpp"
+#include "SearchServer.h"
 #include <gtest/gtest.h>
 
 
